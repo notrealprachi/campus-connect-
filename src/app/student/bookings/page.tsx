@@ -1,23 +1,20 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { useAuth } from '@/context/AuthContext';
 
 export default function StudentBookingsPage() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
   useEffect(() => {
-    const savedUser = localStorage.getItem('user');
-    if (!savedUser) {
-      window.location.href = '/login';
-      return;
-    }
-    const user = JSON.parse(savedUser);
+    if (!user) return;
 
     fetch(`/api/bookings?userId=${user.uid}`).then(res => res.json()).then(data => {
       if (Array.isArray(data)) setBookings(data);
       setLoading(false);
     });
-  }, []);
+  }, [user]);
 
   if (loading) return <p>Loading your bookings...</p>;
 
@@ -33,7 +30,8 @@ export default function StudentBookingsPage() {
         <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
           {bookings.map((booking) => (
             <div key={booking._id} className="glass-panel" style={{ padding: '1.5rem' }}>
-              <h3 style={{ textTransform: 'capitalize' }}>{booking.targetType} Booking</h3>
+              <h3 style={{ textTransform: 'capitalize' }}>{booking.propertyName}</h3>
+              <p style={{ fontSize: '0.875rem', color: 'var(--primary-color)', fontWeight: '600' }}>{booking.targetType} Booking</p>
               <p style={{ margin: '0.5rem 0' }}>Request ID: <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{booking._id}</span></p>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem' }}>
                 <span style={{ 

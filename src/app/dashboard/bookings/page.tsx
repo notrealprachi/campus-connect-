@@ -1,18 +1,21 @@
 'use client';
 import { useEffect, useState } from 'react';
+import { useAuth } from '@/context/AuthContext';
 
 export default function ManageBookingsPage() {
   const [bookings, setBookings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const { user } = useAuth();
+
   useEffect(() => {
-    // For this dummy flow, we fetch all bookings. 
-    // In a real app, we'd filter by the owner's property IDs.
-    fetch('/api/bookings').then(res => res.json()).then(data => {
+    if (!user) return;
+    
+    fetch(`/api/bookings?ownerId=${user.uid}`).then(res => res.json()).then(data => {
       if (Array.isArray(data)) setBookings(data);
       setLoading(false);
     });
-  }, []);
+  }, [user]);
 
   const updateStatus = async (id: string, status: 'confirmed' | 'cancelled') => {
     const res = await fetch(`/api/bookings/${id}`, {
@@ -41,7 +44,8 @@ export default function ManageBookingsPage() {
             <div key={booking._id} className="glass-panel" style={{ padding: '1.5rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                 <div>
-                  <h3 style={{ textTransform: 'capitalize' }}>{booking.targetType} Booking</h3>
+                  <h3 style={{ textTransform: 'capitalize' }}>{booking.propertyName}</h3>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--primary-color)', fontWeight: '600' }}>{booking.targetType} Booking</p>
                   <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Student: {booking.studentName}</p>
                 </div>
                 <span style={{ 

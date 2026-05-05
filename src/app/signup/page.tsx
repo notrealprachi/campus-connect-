@@ -34,7 +34,7 @@ export default function SignupPage() {
       
       if (res.ok) {
         const path = formData.role === 'student' ? '/' : '/dashboard';
-        router.push(path);
+        window.location.href = path;
       } else {
         alert('Failed to sync profile to database.');
       }

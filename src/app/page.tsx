@@ -1,115 +1,167 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Home as HomeIcon, Utensils, Star, MapPin } from 'lucide-react';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Home as HomeIcon, Utensils, Search, ShieldCheck, Camera, Zap, Users, GraduationCap } from 'lucide-react';
+
+const LOCATIONS = ['Randive Galli', 'Maratha Colony', 'Chaugule Galli', 'Gruhayog', '100 Futi', 'Wadkar'];
 
 export default function Home() {
-  const [rooms, setRooms] = useState<any[]>([]);
-  const [messes, setMesses] = useState<any[]>([]);
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
+  const [searchType, setSearchType] = useState<'rooms' | 'messes'>('rooms');
 
-  useEffect(() => {
-    // Initial fetch
-    fetch('/api/rooms').then(res => res.json()).then(data => {
-      if (Array.isArray(data)) setRooms(data);
-    });
-    fetch('/api/messes').then(res => res.json()).then(data => {
-      if (Array.isArray(data)) setMesses(data);
-    });
-  }, []);
-
-  const filteredRooms = rooms.filter(room => 
-    room.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    room.location.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  
-  const filteredMesses = messes.filter(mess => 
-    mess.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    mess.location.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchTerm) {
+      router.push(`/${searchType}?search=${encodeURIComponent(searchTerm)}`);
+    } else {
+      router.push(`/${searchType}`);
+    }
+  };
 
   return (
-    <div className="grid">
-      <section style={{ textAlign: 'center', padding: '4rem 0' }}>
-        <h1>Welcome to CampusConnect</h1>
-        <p style={{ fontSize: '1.25rem', maxWidth: '600px', margin: '0 auto 2rem' }}>
-          The ultimate platform to find verified student accommodations and hygienic mess services near your university.
+    <div className="animate-fade-in">
+      {/* Hero Section */}
+      <section style={{ 
+        textAlign: 'center', 
+        padding: '6rem 1rem', 
+        background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(236, 72, 153, 0.05) 100%)',
+        borderRadius: '32px',
+        marginBottom: '4rem'
+      }}>
+        <h1 style={{ fontSize: '3.5rem', fontWeight: '800', lineHeight: '1.1', marginBottom: '1.5rem' }}>
+          Find Your Perfect <span className="text-gradient">Campus Stay</span>
+        </h1>
+        <p style={{ fontSize: '1.25rem', color: 'var(--text-secondary)', maxWidth: '700px', margin: '0 auto 3rem' }}>
+          Stop wandering in streets! Discover verified rooms, PGs, and premium Marathi mess services in Kasaba Bawada at your fingertips.
         </p>
         
-        <div className="glass-panel" style={{ maxWidth: '600px', margin: '0 auto 2rem', padding: '1.5rem', display: 'flex', gap: '1rem' }}>
-          <input 
-            type="text" 
-            placeholder="Search by name or location..." 
-            className="input-field" 
-            style={{ marginBottom: 0 }}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <button className="btn btn-primary">Search</button>
-        </div>
+        <form onSubmit={handleSearch} className="glass-panel" style={{ 
+          maxWidth: '800px', 
+          margin: '0 auto 3rem', 
+          padding: '0.5rem', 
+          display: 'flex', 
+          flexWrap: 'wrap',
+          gap: '0.5rem',
+          boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
+          borderRadius: '16px'
+        }}>
+          <select 
+            value={searchType} 
+            onChange={(e) => setSearchType(e.target.value as any)}
+            className="input-field"
+            style={{ marginBottom: 0, width: '120px', border: 'none', background: 'var(--bg-color)', fontWeight: '600' }}
+          >
+            <option value="rooms">Rooms</option>
+            <option value="messes">Messes</option>
+          </select>
+
+          <div style={{ flex: '1', position: 'relative', minWidth: '200px' }}>
+            <Search style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} size={20} />
+            <input 
+              type="text" 
+              placeholder={searchType === 'rooms' ? "Search for Rooms/PGs..." : "Search for Mess services..."}
+              className="input-field" 
+              style={{ marginBottom: 0, paddingLeft: '3rem', border: 'none' }}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              list="locations"
+            />
+            <datalist id="locations">
+              {LOCATIONS.map(loc => <option key={loc} value={loc} />)}
+            </datalist>
+          </div>
+          
+          <button type="submit" className="btn btn-primary" style={{ padding: '0 2.5rem', borderRadius: '12px' }}>Search</button>
+        </form>
 
         <div className="flex justify-center gap-4">
-          <a href="/rooms" className="btn btn-primary">Find a Room</a>
-          <a href="/messes" className="btn btn-secondary">Explore Messes</a>
+          <button onClick={() => router.push('/rooms')} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <HomeIcon size={18} /> Find a Room
+          </button>
+          <button onClick={() => router.push('/messes')} className="btn btn-secondary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Utensils size={18} /> Explore Messes
+          </button>
         </div>
       </section>
 
-      <section>
-        <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <HomeIcon className="text-primary-color" /> Featured Rooms
-        </h2>
-        {filteredRooms.length === 0 ? (
-          <div className="glass-panel" style={{ padding: '2rem', textAlign: 'center' }}>
-            <p>No rooms found matching your search.</p>
+      {/* Quick Categories / Filters */}
+      <section style={{ marginBottom: '4rem' }}>
+        <h2 style={{ textAlign: 'center', marginBottom: '2.5rem' }}>Quick Search by Category</h2>
+        <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
+          <div onClick={() => router.push('/rooms?filter=girls')} className="glass-panel hover-scale" style={{ padding: '2rem', textAlign: 'center', cursor: 'pointer', border: '1px solid rgba(236, 72, 153, 0.2)' }}>
+            <div style={{ background: 'rgba(236, 72, 153, 0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
+              <Users color="var(--accent-color)" size={32} />
+            </div>
+            <h4 style={{ color: 'var(--accent-color)' }}>Girls Only PGs</h4>
+            <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Safe & secure stays for girl students</p>
           </div>
-        ) : (
-          <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
-            {filteredRooms.map((room) => (
-              <a href={`/rooms/${room._id}`} key={room._id} className="glass-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', color: 'inherit', textDecoration: 'none' }}>
-                <div style={{ background: '#e2e8f0', height: '180px', borderRadius: '8px', backgroundImage: `url(${room.images?.[0] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?q=80&w=800&auto=format&fit=crop'})`, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
-                <h3>{room.name}</h3>
-                <p style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
-                  <MapPin size={16} /> {room.location}
-                </p>
-                <div className="flex justify-between items-center" style={{ marginTop: 'auto' }}>
-                  <strong style={{ fontSize: '1.25rem', color: 'var(--primary-color)' }}>₹{room.rent}/mo</strong>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: 'var(--warning)' }}>
-                    <Star size={16} fill="currentColor" /> {room.rating || 'New'}
-                  </span>
-                </div>
-              </a>
-            ))}
+          
+          <div onClick={() => router.push('/rooms?filter=budget')} className="glass-panel hover-scale" style={{ padding: '2rem', textAlign: 'center', cursor: 'pointer', border: '1px solid rgba(34, 197, 94, 0.2)' }}>
+            <div style={{ background: 'rgba(34, 197, 94, 0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
+              <Zap color="#22c55e" size={32} />
+            </div>
+            <h4 style={{ color: '#22c55e' }}>Budget Friendly</h4>
+            <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Stays starting from ₹2000/mo</p>
           </div>
-        )}
+
+          <div onClick={() => router.push('/messes?filter=veg')} className="glass-panel hover-scale" style={{ padding: '2rem', textAlign: 'center', cursor: 'pointer', border: '1px solid rgba(79, 70, 229, 0.2)' }}>
+            <div style={{ background: 'rgba(79, 70, 229, 0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
+              <Utensils color="var(--primary-color)" size={32} />
+            </div>
+            <h4 style={{ color: 'var(--primary-color)' }}>Pure Veg Mess</h4>
+            <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Hygienic vegetarian dining services</p>
+          </div>
+
+          <div onClick={() => router.push('/rooms?filter=near')} className="glass-panel hover-scale" style={{ padding: '2rem', textAlign: 'center', cursor: 'pointer', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
+            <div style={{ background: 'rgba(245, 158, 11, 0.1)', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
+              <GraduationCap color="#f59e0b" size={32} />
+            </div>
+            <h4 style={{ color: '#f59e0b' }}>Near College</h4>
+            <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Less than 500m from campus</p>
+          </div>
+        </div>
       </section>
 
-      <section style={{ marginTop: '2rem' }}>
-        <h2 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Utensils className="text-primary-color" /> Hygienic Mess Services
-        </h2>
-        {filteredMesses.length === 0 ? (
-          <div className="glass-panel" style={{ padding: '2rem', textAlign: 'center' }}>
-            <p>No messes found matching your search.</p>
+      {/* Why CampusStay Section */}
+      <section style={{ padding: '4rem 2rem', background: 'rgba(255,255,255,0.4)', borderRadius: '32px', marginBottom: '4rem' }}>
+        <h2 style={{ textAlign: 'center', marginBottom: '4rem' }}>Why Choose CampusStay?</h2>
+        <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '3rem' }}>
+          <div style={{ textAlign: 'center' }}>
+            <ShieldCheck size={48} style={{ color: 'var(--success)', marginBottom: '1.5rem' }} />
+            <h3>100% Verified</h3>
+            <p style={{ color: 'var(--text-secondary)' }}>Every room and mess is personally verified by our team for safety and quality.</p>
           </div>
-        ) : (
-          <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))' }}>
-            {filteredMesses.map((mess) => (
-              <a href={`/messes/${mess._id}`} key={mess._id} className="glass-panel" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', color: 'inherit', textDecoration: 'none' }}>
-                <div style={{ background: '#e2e8f0', height: '180px', borderRadius: '8px', backgroundImage: `url(${mess.images?.[0] || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=800&auto=format&fit=crop'})`, backgroundSize: 'cover', backgroundPosition: 'center' }}></div>
-                <h3>{mess.name}</h3>
-                <p style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', margin: 0 }}>
-                  <MapPin size={16} /> {mess.location}
-                </p>
-                <div className="flex justify-between items-center" style={{ marginTop: 'auto' }}>
-                  <strong style={{ fontSize: '1.25rem', color: 'var(--accent-color)' }}>From ₹{mess.fees.boys}/mo</strong>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: 'var(--warning)' }}>
-                    <Star size={16} fill="currentColor" /> {mess.rating || 'New'}
-                  </span>
-                </div>
-              </a>
-            ))}
+          <div style={{ textAlign: 'center' }}>
+            <Camera size={48} style={{ color: 'var(--primary-color)', marginBottom: '1.5rem' }} />
+            <h3>Real Photos</h3>
+            <p style={{ color: 'var(--text-secondary)' }}>No fake images. What you see on our platform is exactly what you get.</p>
           </div>
-        )}
+          <div style={{ textAlign: 'center' }}>
+            <Zap size={48} style={{ color: 'var(--warning)', marginBottom: '1.5rem' }} />
+            <h3>Direct Connect</h3>
+            <p style={{ color: 'var(--text-secondary)' }}>No brokers. Connect directly with owners and book your stay instantly.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section style={{ textAlign: 'center', padding: '2rem 0' }}>
+        <div className="flex justify-center gap-12 flex-wrap">
+          <div>
+            <h2 style={{ fontSize: '2.5rem', color: 'var(--primary-color)' }}>50+</h2>
+            <p style={{ fontWeight: '600' }}>Verified Stays</p>
+          </div>
+          <div>
+            <h2 style={{ fontSize: '2.5rem', color: 'var(--accent-color)' }}>20+</h2>
+            <p style={{ fontWeight: '600' }}>Hygienic Messes</p>
+          </div>
+          <div>
+            <h2 style={{ fontSize: '2.5rem', color: 'var(--success)' }}>1000+</h2>
+            <p style={{ fontWeight: '600' }}>Happy Students</p>
+          </div>
+        </div>
       </section>
     </div>
   );

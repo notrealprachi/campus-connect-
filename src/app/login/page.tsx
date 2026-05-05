@@ -9,8 +9,11 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const router = useRouter();
 
+  const [loading, setLoading] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
@@ -21,10 +24,15 @@ export default function LoginPage() {
       
       if (data && !data.error) {
         const path = data.role === 'student' ? '/' : '/dashboard';
-        router.push(path);
+        // Force immediate redirection
+        window.location.href = path;
+      } else {
+        // Fallback for edge cases where profile isn't synced yet
+        window.location.href = '/';
       }
     } catch (error: any) {
       alert(error.message);
+      setLoading(false);
     }
   };
 
@@ -55,8 +63,8 @@ export default function LoginPage() {
               placeholder="Enter your password"
             />
           </div>
-          <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '1rem' }}>
-            Login
+          <button type="submit" className="btn btn-primary" style={{ width: '100%', marginTop: '1rem' }} disabled={loading}>
+            {loading ? 'Logging in...' : 'Login'}
           </button>
           <p style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.875rem' }}>
             Don't have an account? <a href="/signup" style={{ color: 'var(--primary-color)', fontWeight: '600' }}>Sign Up</a>

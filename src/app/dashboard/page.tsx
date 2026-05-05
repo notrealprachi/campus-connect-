@@ -16,13 +16,13 @@ export default function DashboardPage() {
         <div className="glass-panel" style={{ padding: '2rem', textAlign: 'center' }}>
           <h3>Add New Mess</h3>
           <p style={{ fontSize: '0.875rem' }}>List your mess and weekly menu.</p>
-          <a href="/dashboard/messes/add" className="btn btn-secondary" style={{ marginTop: '1rem' }}>Create Listing</a>
+          <a href="/dashboard/messes/add" className="btn btn-primary" style={{ marginTop: '1rem' }}>Create Listing</a>
         </div>
         
         <div className="glass-panel" style={{ padding: '2rem', textAlign: 'center' }}>
           <h3>My Listings</h3>
           <p style={{ fontSize: '0.875rem' }}>View and update your active properties.</p>
-          <a href="/dashboard/listings" className="btn btn-secondary" style={{ marginTop: '1rem' }}>View All</a>
+          <a href="/dashboard/listings" className="btn btn-primary" style={{ marginTop: '1rem' }}>View All</a>
         </div>
 
         <div className="glass-panel" style={{ padding: '2rem', textAlign: 'center' }}>

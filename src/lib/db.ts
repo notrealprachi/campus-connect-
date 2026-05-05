@@ -1,20 +1,9 @@
 import mongoose from 'mongoose';
-import dns from 'dns';
 
 const MONGODB_URI = process.env.MONGODB_URI!;
 
 if (!MONGODB_URI) {
   throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
-}
-
-// Critical: Override DNS to Google DNS before any MongoDB connection.
-// This fixes ECONNREFUSED on SRV lookups in restricted network environments.
-if (typeof window === 'undefined') {
-  try {
-    dns.setServers(['8.8.8.8', '8.8.4.4']);
-  } catch (e) {
-    // DNS servers already set
-  }
 }
 
 let cached = (global as any).mongoose;
