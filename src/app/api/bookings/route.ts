@@ -48,9 +48,15 @@ export async function GET(request: Request) {
     
     // For student view, we still need property names
     const enriched = await Promise.all(bookings.map(async (b: any) => {
-      const Model = b.targetType === 'Room' ? Room : Mess;
-      const property = await (Model as any).findById(b.targetId).select('name').lean();
-      return { ...b, propertyName: property?.name || 'Unknown Property' };
+      let propertyName = 'Unknown Property';
+      if (b.targetType === 'Room') {
+        const room: any = await Room.findById(b.targetId).select('name').lean();
+        if (room) propertyName = room.name;
+      } else if (b.targetType === 'Mess') {
+        const mess: any = await Mess.findById(b.targetId).select('name').lean();
+        if (mess) propertyName = mess.name;
+      }
+      return { ...b, propertyName };
     }));
 
     return NextResponse.json(enriched);
