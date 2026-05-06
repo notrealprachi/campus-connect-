@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 import dbConnect from '@/lib/db';
 import { Booking } from '@/lib/models/Booking';
 import { User } from '@/lib/models/User';
+import { Room } from '@/lib/models/Room';
+import { Mess } from '@/lib/models/Mess';
 
 export async function GET(request: Request) {
   try {
@@ -15,8 +17,8 @@ export async function GET(request: Request) {
     if (ownerId) {
       // Find all rooms and messes owned by this user
       const [rooms, messes] = await Promise.all([
-        mongoose.model('Room').find({ ownerId }).select('name').lean(),
-        mongoose.model('Mess').find({ ownerId }).select('name').lean()
+        Room.find({ ownerId }).select('name').lean(),
+        Mess.find({ ownerId }).select('name').lean()
       ]);
       
       const propertyMap = new Map();
@@ -46,8 +48,8 @@ export async function GET(request: Request) {
     
     // For student view, we still need property names
     const enriched = await Promise.all(bookings.map(async (b: any) => {
-      const model = b.targetType === 'Room' ? mongoose.model('Room') : mongoose.model('Mess');
-      const property = await model.findById(b.targetId).select('name').lean() as any;
+      const Model = b.targetType === 'Room' ? Room : Mess;
+      const property = await (Model as any).findById(b.targetId).select('name').lean();
       return { ...b, propertyName: property?.name || 'Unknown Property' };
     }));
 
