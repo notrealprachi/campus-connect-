@@ -10,7 +10,7 @@ export interface IBooking extends Document {
 
 const BookingSchema = new Schema<IBooking>({
   userId: { type: String, required: true }, // Using string for dummy auth compatibility
-  targetId: { type: Schema.Types.ObjectId, required: true, refPath: 'targetType' },
+  targetId: { type: String, required: true, refPath: 'targetType' },
   targetType: { type: String, enum: ['Room', 'Mess'], required: true },
   status: { type: String, enum: ['pending', 'confirmed', 'cancelled'], default: 'pending' },
   createdAt: { type: Date, default: Date.now },

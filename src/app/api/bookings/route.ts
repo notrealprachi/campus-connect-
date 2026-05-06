@@ -47,7 +47,7 @@ export async function GET(request: Request) {
     // For student view, we still need property names
     const enriched = await Promise.all(bookings.map(async (b: any) => {
       const model = b.targetType === 'Room' ? mongoose.model('Room') : mongoose.model('Mess');
-      const property = await model.findById(b.targetId).select('name').lean();
+      const property = await model.findById(b.targetId).select('name').lean() as any;
       return { ...b, propertyName: property?.name || 'Unknown Property' };
     }));
 

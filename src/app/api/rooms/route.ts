@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     // Validate input
     const validatedData = RoomSchema.parse(body);
     
-    const room = await Room.create(validatedData);
+    const room = await Room.create(validatedData as any);
     return NextResponse.json(room, { status: 201 });
   } catch (error: any) {
     console.error('Error creating room:', error);

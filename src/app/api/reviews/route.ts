@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     const avgRating = allReviews.reduce((acc, curr) => acc + curr.rating, 0) / allReviews.length;
     
     // Update the parent model
-    const Model = body.targetType.toLowerCase() === 'room' ? Room : Mess;
+    const Model: any = body.targetType.toLowerCase() === 'room' ? Room : Mess;
     await Model.findByIdAndUpdate(body.targetId, { 
       rating: Number(avgRating.toFixed(1)),
       reviewCount: allReviews.length 
