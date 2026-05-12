@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
 
 const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 const MARATHI_DISHES = ['Poha', 'Sabudana Khichdi', 'Thalipeeth', 'Puran Poli', 'Bhakri', 'Pithla', 'Varun Bhat', 'Paneer Bhaji', 'Chicken Curry', 'Egg Curry', 'Misal Pav', 'Veg Kolhapuri', 'Dal Tadka', 'Rajma', 'Kadhi'];
@@ -40,8 +41,8 @@ export default function EditMessPage() {
           setFormData({
             name: mess.name,
             location: mess.location,
-            feesBoys: mess.fees.boys.toString(),
-            feesGirls: mess.fees.girls.toString(),
+            feesBoys: (mess.feesBoys || 0).toString(),
+            feesGirls: (mess.feesGirls || 0).toString(),
             collegeDistance: mess.collegeDistance.toString(),
             vegNonVeg: mess.vegNonVeg || 'Veg',
             specialSundayMenu: mess.specialSundayMenu || '',
@@ -83,7 +84,8 @@ export default function EditMessPage() {
     const payload = {
       name: formData.name,
       location: formData.location,
-      fees: { boys: Number(formData.feesBoys), girls: Number(formData.feesGirls) },
+      feesBoys: Number(formData.feesBoys),
+      feesGirls: Number(formData.feesGirls),
       collegeDistance: Number(formData.collegeDistance),
       images: imageFiles,
       kitchenImages: kitchenImages,
@@ -114,6 +116,14 @@ export default function EditMessPage() {
 
   return (
     <div className="glass-panel" style={{ maxWidth: '1000px', margin: '2rem auto', padding: '2.5rem' }}>
+      <button 
+        onClick={() => router.back()} 
+        className="btn-secondary" 
+        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', padding: '0.5rem 1rem', border: 'none', background: 'transparent', cursor: 'pointer', fontWeight: '600', color: 'var(--text-secondary)' }}
+      >
+        <ArrowLeft size={18} /> Back
+      </button>
+
       <h2 style={{ textAlign: 'center', marginBottom: '2rem' }}>Edit Marathi Mess Service</h2>
       
       <form onSubmit={handleSubmit} className="animate-fade-in">

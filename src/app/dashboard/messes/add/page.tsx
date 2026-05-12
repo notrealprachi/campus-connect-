@@ -1,12 +1,15 @@
 'use client';
 import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
 
 const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 const MARATHI_DISHES = ['Poha', 'Sabudana Khichdi', 'Thalipeeth', 'Puran Poli', 'Bhakri', 'Pithla', 'Varun Bhat', 'Paneer Bhaji', 'Chicken Curry', 'Egg Curry', 'Misal Pav', 'Veg Kolhapuri', 'Dal Tadka', 'Rajma', 'Kadhi'];
 
 export default function AddMessPage() {
   const { user } = useAuth();
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
     location: '',
@@ -60,7 +63,8 @@ export default function AddMessPage() {
     const payload = {
       name: formData.name,
       location: formData.location,
-      fees: { boys: Number(formData.feesBoys), girls: Number(formData.feesGirls) },
+      feesBoys: Number(formData.feesBoys),
+      feesGirls: Number(formData.feesGirls),
       collegeDistance: Number(formData.collegeDistance),
       images: imageFiles,
       kitchenImages: kitchenImages,
@@ -90,6 +94,14 @@ export default function AddMessPage() {
 
   return (
     <div className="glass-panel" style={{ maxWidth: '1000px', margin: '2rem auto', padding: '2.5rem' }}>
+      <button 
+        onClick={() => router.back()} 
+        className="btn-secondary" 
+        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', padding: '0.5rem 1rem', border: 'none', background: 'transparent', cursor: 'pointer', fontWeight: '600', color: 'var(--text-secondary)' }}
+      >
+        <ArrowLeft size={18} /> Back
+      </button>
+
       <h2 style={{ textAlign: 'center', marginBottom: '2rem' }}>List a New Marathi Mess Service</h2>
       
       <form onSubmit={handleSubmit} className="animate-fade-in">

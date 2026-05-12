@@ -1,6 +1,20 @@
+'use client';
+import { useRouter } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
+
 export default function DashboardPage() {
+  const router = useRouter();
+
   return (
     <div>
+      <button 
+        onClick={() => router.back()} 
+        className="btn-secondary" 
+        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', padding: '0.5rem 1rem', border: 'none', background: 'transparent', cursor: 'pointer', fontWeight: '600', color: 'var(--text-secondary)' }}
+      >
+        <ArrowLeft size={18} /> Back
+      </button>
+
       <h1 style={{ background: 'var(--text-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
         Owner Dashboard
       </h1>

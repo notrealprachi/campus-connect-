@@ -1,11 +1,14 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
 
 export default function OwnerListingsPage() {
   const [rooms, setRooms] = useState<any[]>([]);
   const [messes, setMesses] = useState<any[]>([]);
   const { user } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     if (!user) return;
@@ -35,6 +38,14 @@ export default function OwnerListingsPage() {
 
   return (
     <div>
+      <button 
+        onClick={() => router.back()} 
+        className="btn-secondary" 
+        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', padding: '0.5rem 1rem', border: 'none', background: 'transparent', cursor: 'pointer', fontWeight: '600', color: 'var(--text-secondary)' }}
+      >
+        <ArrowLeft size={18} /> Back
+      </button>
+
       <h1 style={{ marginBottom: '2rem' }}>My Manageable Listings</h1>
 
       <section style={{ marginBottom: '3rem' }}>
@@ -64,7 +75,7 @@ export default function OwnerListingsPage() {
               <div key={mess._id} className="glass-panel" style={{ padding: '1.5rem' }}>
                 <h3 style={{ margin: '0 0 1rem' }}>{mess.name}</h3>
                 <p>Location: {mess.location}</p>
-                <p>Boys/Girls Fees: ₹{mess.fees.boys} / ₹{mess.fees.girls}</p>
+                <p>Boys/Girls Fees: ₹{mess.feesBoys} / ₹{mess.feesGirls}</p>
                 <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
                   <a href={`/dashboard/messes/${mess._id}/edit`} className="btn btn-secondary" style={{ flex: 1, textAlign: 'center' }}>Edit</a>
                   <button className="btn btn-primary" style={{ flex: 1, background: 'var(--danger)' }} onClick={() => handleDelete(mess._id, 'mess')}>Delete</button>

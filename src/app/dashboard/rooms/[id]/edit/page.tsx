@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
 
 const BASIC_FACILITIES = ['Attached Bathroom', 'Shared Bathroom', '24x7 Water', 'Drinking Water Filter', 'Electricity Backup', 'WiFi', 'Cupboard', 'Study Table', 'Balcony', 'Parking'];
 const APPLIANCES = ['Fan', 'Cooler', 'Heater', 'Induction', 'Refrigerator', 'Washing Machine', 'Iron', 'Laptop/PC'];
@@ -96,6 +97,14 @@ export default function EditRoomPage() {
 
   return (
     <div className="glass-panel" style={{ maxWidth: '900px', margin: '2rem auto', padding: '2.5rem' }}>
+      <button 
+        onClick={() => router.back()} 
+        className="btn-secondary" 
+        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', padding: '0.5rem 1rem', border: 'none', background: 'transparent', cursor: 'pointer', fontWeight: '600', color: 'var(--text-secondary)' }}
+      >
+        <ArrowLeft size={18} /> Back
+      </button>
+
       <h2 style={{ textAlign: 'center', marginBottom: '2rem' }}>Edit Room / PG</h2>
       
       <form onSubmit={handleSubmit} className="animate-fade-in">

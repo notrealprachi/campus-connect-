@@ -1,6 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
 
 const BASIC_FACILITIES = ['Attached Bathroom', 'Shared Bathroom', '24x7 Water', 'Drinking Water Filter', 'Electricity Backup', 'WiFi', 'Cupboard', 'Study Table', 'Balcony', 'Parking'];
 const APPLIANCES = ['Fan', 'Cooler', 'Heater', 'Induction', 'Refrigerator', 'Washing Machine', 'Iron', 'Laptop/PC'];
@@ -9,6 +11,7 @@ const VACANCY_STATUSES = ['Available', 'Few Beds Left', 'No Vacancy', 'Vacancy C
 
 export default function AddRoomPage() {
   const { user } = useAuth();
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
     location: '',
@@ -88,6 +91,14 @@ export default function AddRoomPage() {
 
   return (
     <div className="glass-panel" style={{ maxWidth: '900px', margin: '2rem auto', padding: '2.5rem' }}>
+      <button 
+        onClick={() => router.back()} 
+        className="btn-secondary" 
+        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', padding: '0.5rem 1rem', border: 'none', background: 'transparent', cursor: 'pointer', fontWeight: '600', color: 'var(--text-secondary)' }}
+      >
+        <ArrowLeft size={18} /> Back
+      </button>
+
       <h2 style={{ textAlign: 'center', marginBottom: '2rem' }}>List a New Room / PG</h2>
       
       <form onSubmit={handleSubmit} className="animate-fade-in">

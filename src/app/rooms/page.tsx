@@ -1,10 +1,11 @@
 'use client';
 import { useEffect, useState, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { MapPin, Star, Search, Filter } from 'lucide-react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { MapPin, Star, Search, Filter, ArrowLeft } from 'lucide-react';
 
 function RoomsContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [rooms, setRooms] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
   const [activeFilter, setActiveFilter] = useState(searchParams.get('filter') || 'all');
@@ -50,6 +51,14 @@ function RoomsContent() {
 
   return (
     <div className="animate-fade-in">
+      <button 
+        onClick={() => router.back()} 
+        className="btn-secondary" 
+        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', padding: '0.5rem 1rem', border: 'none', background: 'transparent', cursor: 'pointer', fontWeight: '600', color: 'var(--text-secondary)' }}
+      >
+        <ArrowLeft size={18} /> Back
+      </button>
+
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <h1>All Rooms & PGs</h1>
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>

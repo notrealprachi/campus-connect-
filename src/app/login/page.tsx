@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase/config';
 import { useRouter } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -39,6 +40,14 @@ export default function LoginPage() {
   return (
     <div className="flex justify-center items-center" style={{ minHeight: '80vh' }}>
       <div className="glass-panel" style={{ width: '100%', maxWidth: '400px', padding: '2rem' }}>
+        <button 
+          onClick={() => router.back()} 
+          className="btn-secondary" 
+          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem', padding: '0.5rem 1rem', border: 'none', background: 'transparent', cursor: 'pointer', fontWeight: '600', color: 'var(--text-secondary)' }}
+        >
+          <ArrowLeft size={18} /> Back
+        </button>
+
         <h2 style={{ textAlign: 'center', marginBottom: '2rem' }}>Welcome Back</h2>
         <form onSubmit={handleSubmit}>
           <div className="input-group">
